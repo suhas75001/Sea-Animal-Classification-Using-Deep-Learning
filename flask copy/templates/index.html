@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sea Animal Classifier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(120deg, #00b4d8 0%, #48cae4 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 520px;
+            margin: 60px auto;
+            background: rgba(255,255,255,0.97);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 38px 28px 32px 28px;
+            text-align: center;
+        }
+        h1 {
+            color: #0077b6;
+            font-size: 2.3rem;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 13px 26px;
+            background: linear-gradient(90deg, #0096c7 0%, #00b4d8 100%);
+            color: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 2px solid #00b4d8;
+            margin-bottom: 18px;
+            transition: background 0.3s, border 0.3s;
+        }
+        .custom-file-upload:hover {
+            background: #0077b6;
+            border-color: #005f8a;
+        }
+        input[type="file"] { display: none; }
+        .model-select {
+            margin: 18px 0 12px 0;
+            font-size: 1.08rem;
+        }
+        .model-select label {
+            margin: 0 12px;
+            font-weight: 500;
+            color: #0077b6;
+        }
+        .model-select input[type="radio"] {
+            accent-color: #00b4d8;
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            margin-top: 18px;
+            padding: 13px 32px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(90deg, #00b4d8 0%, #0096c7 100%);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,180,216,0.08);
+            transition: background 0.3s;
+        }
+        input[type="submit"]:hover {
+            background: #0077b6;
+        }
+        img.preview {
+            margin-top: 24px;
+            max-width: 100%;
+            max-height: 320px;
+            border-radius: 14px;
+            border: 3px solid #00b4d8;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+        }
+        .prediction {
+            margin-top: 28px;
+            font-size: 1.25rem;
+            color: #023e8a;
+            font-weight: bold;
+            padding: 16px 22px;
+            background-color: #caf0f8;
+            border: 2px dashed #00b4d8;
+            border-radius: 14px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,180,216,0.08);
+        }
+        @media (max-width: 700px) {
+            .container { margin: 30px 8px; padding: 18px 6px; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🐬 Sea Animal Classifier</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label class="custom-file-upload">
+            <input type="file" name="file" id="fileInput" accept="image/*" required>
+            📤 Choose Image
+        </label>
+        <div class="model-select">
+            <label>
+                <input type="radio" name="model" value="densenet" {% if selected_model == "densenet" or not selected_model %}checked{% endif %}> DenseNet201
+            </label>
+            <label>
+                <input type="radio" name="model" value="xception" {% if selected_model == "xception" %}checked{% endif %}> Xception
+            </label>
+            <label>
+                <input type="radio" name="model" value="inception" {% if selected_model == "inception" %}checked{% endif %}> InceptionV3
+            </label>
+            <label>
+                <input type="radio" name="model" value="resnet" {% if selected_model == "resnet" %}checked{% endif %}> ResNet50V2
+            </label>
+        </div>
+        <input type="submit" value="🔍 Predict">
+    </form>
+
+    <!-- Show uploaded image preview -->
+    {% if file_path %}
+        <img src="{{ file_path }}" alt="Uploaded Image" class="preview">
+    {% endif %}
+
+    <!-- Show prediction result -->
+    {% if prediction %}
+        <div class="prediction">
+            ✅ Predicted Class: {{ prediction }}
+        </div>
+    {% endif %}
+</div>
+<script>
+    // Live preview of selected image before upload
+    const fileInput = document.getElementById('fileInput');
+    fileInput.onchange = evt => {
+        const [file] = fileInput.files;
+        if (file) {
+            let img = document.querySelector('.preview');
+            if (!img) {
+                img = document.createElement('img');
+                img.className = 'preview';
+                document.querySelector('.container').appendChild(img);
+            }
+            img.src = URL.createObjectURL(file);
+        }
+    }
+</script>
+</body>
+</html>
